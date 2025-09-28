@@ -1,0 +1,29 @@
+<%- include('../../partials/header', { title: 'Student Search Results' }) %>
+
+<h1 class="text-3xl font-bold mb-6">Student Search Results</h1>
+
+<% if (typeof students !== 'undefined' && students.length > 0) { %>
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Name</th>
+                <th class="py-2">Email</th>
+                <th class="py-2">Batch</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% students.forEach(student => { %>
+                <tr>
+                    <td class="py-2"><%= student.name %></td>
+                    <td class="py-2"><%= student.email %></td>
+                    <td class="py-2"><%= student.batch_name %></td>
+                    <td class="py-2"><a href="/teacher/students/<%= student.id %>" class="text-blue-500 hover:underline">View Profile</a></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p class="text-gray-500">No students found.</p>
+<% } %>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,99 @@
+<%- include('../../partials/header', { title: 'Manage Payments' }) %>
+
+<h1 class="text-3xl font-bold mb-6">Manage Payments</h1>
+
+<div class="grid md:grid-cols-2 gap-8">
+    <!-- Manual Payment Entry Form -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Add Manual Payment</h2>
+        <form action="/teacher/payments/manual" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <label for="student_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Student</label>
+                <select id="student_id" name="student_id" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                    <option value="">-- Select Student --</option>
+                    <% if (typeof students !== 'undefined') { students.forEach(student => { %>
+                        <option value="<%= student.id %>"><%= student.name %> (Roll: <%= student.roll_no %>)</option>
+                    <% }) } %>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="batch_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Batch</label>
+                <select id="batch_id" name="batch_id" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                    <option value="">-- Select Batch --</option>
+                    <% if (typeof batches !== 'undefined') { batches.forEach(batch => { %>
+                        <option value="<%= batch.id %>"><%= batch.name %></option>
+                    <% }) } %>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount (e.g., 5000.00)</label>
+                    <input type="number" step="0.01" id="amount" name="amount" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                </div>
+                <div>
+                    <label for="paid_on" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Paid On</label>
+                    <input type="date" id="paid_on" name="paid_on" value="<%= new Date().toISOString().split('T')[0] %>" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="mode" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mode</label>
+                    <select id="mode" name="mode" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                        <option>CASH</option>
+                        <option>UPI</option>
+                        <option>CHEQUE</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="reference_no" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reference / Cheque No.</label>
+                    <input type="text" id="reference_no" name="reference_no" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
+                <textarea id="notes" name="notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">Add Payment</button>
+        </form>
+    </div>
+
+    <!-- Recent Payments List -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Recent Payments</h2>
+        <div class="overflow-x-auto">
+            <% if (typeof payments !== 'undefined' && payments.length > 0) { %>
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <% payments.forEach(payment => { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= payment.student_name %></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= payment.batch_name %></td>
+                                <td class="px-6 py-4 whitespace-nowrap">₹<%= (payment.amount_cents / 100).toFixed(2) %></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= payment.mode %></td>
+                                <td class="px-6 py-4 whitespace-nowrap"><%= new Date(payment.paid_on).toLocaleDateString() %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p class="text-center text-gray-500">No recent payments found.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>

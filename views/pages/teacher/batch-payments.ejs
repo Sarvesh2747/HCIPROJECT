@@ -1,0 +1,34 @@
+<%- include('../../partials/header', { title: 'Batch Payments' }) %>
+
+<h1 class="text-3xl font-bold mb-6"><%= batch.name %> - Payments</h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Student</th>
+                <th class="py-2">Amount</th>
+                <th class="py-2">Date</th>
+                <th class="py-2">Mode</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof payments !== 'undefined' && payments.length > 0) { %>
+                <% payments.forEach(payment => { %>
+                    <tr>
+                        <td class="py-2"><%= payment.student_name %></td>
+                        <td class="py-2">₹<%= (payment.amount_cents / 100).toFixed(2) %></td>
+                        <td class="py-2"><%= new Date(payment.paid_on).toLocaleDateString() %></td>
+                        <td class="py-2"><%= payment.mode %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4" class="py-2 text-gray-500">No payments found for this batch.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../../partials/footer') %>

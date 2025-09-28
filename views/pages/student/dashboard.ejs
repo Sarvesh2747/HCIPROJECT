@@ -1,0 +1,63 @@
+<%- include('../../partials/header', { title: 'Student Dashboard' }) %>
+
+<h1 class="text-3xl font-bold mb-6">Your Dashboard</h1>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Attendance Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Attendance</h2>
+        <p class="text-5xl font-bold <%= attendancePercentage >= 80 ? 'text-green-500' : 'text-yellow-500' %>"><%= attendancePercentage %>%</p>
+        <a href="/student/attendance" class="text-blue-500 hover:underline">View Details</a>
+    </div>
+
+    <!-- Next Due Amount Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Next Payment</h2>
+        <% if (nextDueInvoice) { %>
+            <p class="text-3xl font-bold text-red-500">₹<%= (nextDueInvoice.amount_cents / 100).toFixed(2) %></p>
+            <p class="text-gray-500 dark:text-gray-400">Due on: <%= new Date(nextDueInvoice.due_on).toLocaleDateString() %></p>
+        <% } else { %>
+            <p class="text-3xl font-bold text-green-500">All Clear!</p>
+            <p class="text-gray-500 dark:text-gray-400">No pending payments.</p>
+        <% } %>
+    </div>
+
+    <!-- Latest Payment Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Last Payment</h2>
+        <% if (lastPayment) { %>
+            <p class="text-3xl font-bold text-green-500">Paid</p>
+            <p class="text-gray-500 dark:text-gray-400">₹<%= (lastPayment.amount_cents / 100).toFixed(2) %> on <%= new Date(lastPayment.paid_on).toLocaleDateString() %></p>
+        <% } else { %>
+            <p class="text-xl font-bold text-gray-500">No payment history</p>
+        <% } %>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Quick Actions</h2>
+        <div class="flex flex-col space-y-2">
+            <a href="/student/payments" class="bg-blue-600 text-white text-center px-4 py-2 rounded-md hover:bg-blue-700">Pay Fees</a>
+            <a href="/student/payments" class="bg-gray-200 dark:bg-gray-700 text-center px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">View Payment History</a>
+        </div>
+    </div>
+</div>
+
+<div class="mt-8">
+    <h2 class="text-2xl font-bold mb-4">Announcements</h2>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <% if (typeof announcements !== 'undefined' && announcements.length > 0) { %>
+            <% announcements.forEach((announcement, index) => { %>
+                <div class="<%= index < announcements.length - 1 ? 'border-b border-gray-200 dark:border-gray-700 pb-4 mb-4' : '' %>">
+                    <h3 class="text-lg font-semibold"><%= announcement.title %></h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Posted on <%= new Date(announcement.created_at).toLocaleDateString() %></p>
+                    <p><%= announcement.body %></p>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p class="text-gray-500 dark:text-gray-400">No announcements at this time.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,10 @@
+<%- include('../partials/header', { title: 'Server Error' }) %>
+
+<div class="text-center">
+    <h1 class="text-6xl font-bold text-red-600"><%= typeof statusCode != 'undefined' ? statusCode : '500' %></h1>
+    <p class="text-xl md:text-2xl font-light text-gray-600 dark:text-gray-300 mb-4">Oops! Something went wrong.</p>
+    <p class="text-md text-gray-500 dark:text-gray-400 mb-8"><%= typeof message != 'undefined' ? message : 'An unexpected error occurred on our end.' %></p>
+    <a href="/" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Go Home</a>
+</div>
+
+<%- include('../partials/footer') %>

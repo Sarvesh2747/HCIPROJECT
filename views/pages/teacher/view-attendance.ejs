@@ -1,0 +1,38 @@
+<%- include('../../partials/header', { title: 'View Attendance' }) %>
+
+<h1 class="text-3xl font-bold mb-6">View Attendance for <%= batch.name %></h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <form method="GET" class="mb-4">
+        <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Date</label>
+        <input type="date" id="date" name="date" value="<%= date %>" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+        <button type="submit" class="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">View Attendance</button>
+    </form>
+
+    <% if (typeof attendance !== 'undefined') { %>
+        <table class="w-full text-left">
+            <thead>
+                <tr>
+                    <th class="py-2">Student</th>
+                    <th class="py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (attendance.length > 0) { %>
+                    <% attendance.forEach(record => { %>
+                        <tr>
+                            <td class="py-2"><%= record.student_name %></td>
+                            <td class="py-2"><%= record.status %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="2" class="py-2 text-gray-500">No attendance records found for this date.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    <% } %>
+</div>
+
+<%- include('../../partials/footer') %>

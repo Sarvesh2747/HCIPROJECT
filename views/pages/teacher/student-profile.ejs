@@ -1,0 +1,13 @@
+<%- include('../../partials/header', { title: 'Student Profile' }) %>
+
+<h1 class="text-3xl font-bold mb-6"><%= student.name %></h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <p><strong>Email:</strong> <%= student.email %></p>
+    <p><strong>Batch:</strong> <%= student.batch_name %></p>
+    <p><strong>Roll No:</strong> <%= student.roll_no %></p>
+    <a href="/teacher/students/<%= student.id %>/attendance" class="text-blue-500 hover:underline">View Attendance</a>
+    <a href="/teacher/students/<%= student.id %>/payments" class="text-blue-500 hover:underline ml-4">View Payments</a>
+</div>
+
+<%- include('../../partials/footer') %>

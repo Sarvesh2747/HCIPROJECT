@@ -1,0 +1,32 @@
+<%- include('../../partials/header', { title: 'Batch Announcements' }) %>
+
+<h1 class="text-3xl font-bold mb-6"><%= batch.name %> - Announcements</h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Title</th>
+                <th class="py-2">Body</th>
+                <th class="py-2">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof announcements !== 'undefined' && announcements.length > 0) { %>
+                <% announcements.forEach(announcement => { %>
+                    <tr>
+                        <td class="py-2"><%= announcement.title %></td>
+                        <td class="py-2"><%= announcement.body %></td>
+                        <td class="py-2"><%= new Date(announcement.created_at).toLocaleDateString() %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="3" class="py-2 text-gray-500">No announcements found for this batch.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../../partials/footer') %>

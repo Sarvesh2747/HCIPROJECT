@@ -1,0 +1,86 @@
+<%- include('../../partials/header', { title: 'My Attendance' }) %>
+
+<h1 class="text-3xl font-bold mb-6">My Attendance</h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <!-- Filter Form -->
+    <form action="/student/attendance" method="GET" class="mb-6">
+        <div class="grid md:grid-cols-4 gap-4 items-end">
+            <div>
+                <label for="from_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">From</label>
+                <input type="date" id="from_date" name="from_date" value="<%= typeof from_date !== 'undefined' ? from_date : '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <label for="to_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">To</label>
+                <input type="date" id="to_date" name="to_date" value="<%= typeof to_date !== 'undefined' ? to_date : '' %>" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Filter</button>
+            </div>
+            <div>
+                <a id="export-csv-btn" href="/student/attendance/export" class="w-full block text-center bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">Export as CSV</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Attendance Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <% if (typeof attendance !== 'undefined' && attendance.length > 0) { %>
+                    <% attendance.forEach(record => { %>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap"><%= new Date(record.date).toDateString() %></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><%= record.batch_name %></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (record.status === 'PRESENT') { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Present</span>
+                                <% } else { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Absent</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-gray-500">No attendance records found for the selected period.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fromDate = document.getElementById('from_date');
+        const toDate = document.getElementById('to_date');
+        const exportBtn = document.getElementById('export-csv-btn');
+
+        function updateExportLink() {
+            const from = fromDate.value;
+            const to = toDate.value;
+            let href = '/student/attendance/export';
+            if (from && to) {
+                href += `?from_date=${from}&to_date=${to}`;
+            }
+            exportBtn.href = href;
+        }
+
+        // Update on page load
+        updateExportLink();
+
+        // Update when dates change
+        fromDate.addEventListener('change', updateExportLink);
+        toDate.addEventListener('change', updateExportLink);
+    });
+</script>

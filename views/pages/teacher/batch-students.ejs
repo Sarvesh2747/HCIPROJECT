@@ -1,0 +1,39 @@
+<%- include('../../partials/header', { title: 'Batch Students' }) %>
+
+<h1 class="text-3xl font-bold mb-6"><%= batch.name %> - Students</h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Name</th>
+                <th class="py-2">Email</th>
+                <th class="py-2">Roll No</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof students !== 'undefined' && students.length > 0) { %>
+                <% students.forEach(student => { %>
+                    <tr>
+                        <td class="py-2"><%= student.name %></td>
+                        <td class="py-2"><%= student.email %></td>
+                        <td class="py-2"><%= student.roll_no %></td>
+                        <td class="py-2">
+                            <a href="/teacher/students/<%= student.id %>" class="text-blue-500 hover:underline mr-2">View Profile</a>
+                            <form action="/teacher/batches/<%= batch.id %>/students/<%= student.id %>?_method=DELETE" method="POST" class="inline">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button type="submit" class="text-red-500 hover:underline">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="3" class="py-2 text-gray-500">No students found in this batch.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../../partials/footer') %>

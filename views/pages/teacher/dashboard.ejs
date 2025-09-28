@@ -1,0 +1,155 @@
+<%- include('../../partials/header', { title: 'Teacher Dashboard' }) %>
+
+<h1 class="text-3xl font-bold mb-6">Teacher Dashboard</h1>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Today's Classes -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Today's Classes</h2>
+        <p class="text-5xl font-bold text-blue-500"><%= todaysClasses %></p>
+        <a href="/teacher/schedule" class="text-blue-500 hover:underline">View Schedule</a>
+    </div>
+
+    <!-- Pending Attendance -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Pending Attendance</h2>
+        <p class="text-5xl font-bold text-yellow-500"><%= pendingAttendance %></p>
+        <a href="/teacher/attendance" class="text-yellow-500 hover:underline">Mark Now</a>
+    </div>
+
+    <!-- Overdue Invoices -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Overdue Invoices</h2>
+        <p class="text-5xl font-bold text-red-500"><%= overdueInvoices %></p>
+        <a href="/teacher/payments" class="text-red-500 hover:underline">View Payments</a>
+    </div>
+
+    <!-- Recent Payments -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-2">Recent Payments</h2>
+        <p class="text-5xl font-bold text-green-500"><%= recentPayments %></p>
+        <a href="/teacher/payments" class="text-green-500 hover:underline">View All</a>
+    </div>
+</div>
+
+<div class="mt-8 grid md:grid-cols-2 gap-6">
+    <!-- Quick Announcement -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Post an Announcement</h2>
+        <form action="/teacher/announcements" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title</label>
+                <input type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+            </div>
+            <div class="mb-4">
+                <label for="body" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
+                <textarea id="body" name="body" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="batch_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Batch</label>
+                <select id="batch_id" name="batch_id" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+                    <option value="">Select a Batch</option>
+                    <% if (typeof batches !== 'undefined' && batches.length > 0) { %>
+                        <% batches.forEach(batch => { %>
+                            <option value="<%= batch.id %>"><%= batch.name %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Post Announcement</button>
+        </form>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Recent Activity</h2>
+        <ul>
+            <% if (typeof activities !== 'undefined' && activities.length > 0) { %>
+                <% activities.forEach((activity, index) => { %>
+                    <li class="<%= index < activities.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : '' %> py-2">
+                        Received payment of ₹<%= (activity.amount_cents / 100).toFixed(2) %> from <%= activity.student_name %>.
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <li class="py-2 text-gray-500">No recent activity.</li>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+<div class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Search Students</h2>
+    <form action="/teacher/students/search" method="GET">
+        <div class="flex items-center">
+            <input type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="Search by name..." required>
+            <button type="submit" class="ml-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Manage Batches</h2>
+    <form action="/teacher/batches" method="POST" class="mb-4">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="flex items-center">
+            <input type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" placeholder="New Batch Name" required>
+            <button type="submit" class="ml-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Create Batch</button>
+        </div>
+    </form>
+    <ul>
+        <% if (typeof batches !== 'undefined' && batches.length > 0) { %>
+            <% batches.forEach(batch => { %>
+                <li class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+                    <span><%= batch.name %></span>
+                    <div>
+                        <a href="/teacher/batches/<%= batch.id %>/schedule" class="text-blue-500 hover:underline mr-2">View Schedule</a>
+                        <a href="/teacher/batches/<%= batch.id %>/edit" class="text-blue-500 hover:underline mr-2">Edit</a>
+                        <form action="/teacher/batches/<%= batch.id %>?_method=DELETE" method="POST" class="inline">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        <% } else { %>
+            <li class="py-2 text-gray-500">No batches found.</li>
+        <% } %>
+    </ul>
+</div>
+
+<div class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Recent Announcements</h2>
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Title</th>
+                <th class="py-2">Batch</th>
+                <th class="py-2">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof announcements !== 'undefined' && announcements.length > 0) { %>
+                <% announcements.forEach(announcement => { %>
+                    <tr>
+                        <td class="py-2"><%= announcement.title %></td>
+                        <td class="py-2"><%= announcement.batch_name %></td>
+                        <td class="py-2"><%= new Date(announcement.created_at).toLocaleDateString() %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="3" class="py-2 text-gray-500">No recent announcements.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Student Distribution</h2>
+    <canvas id="studentDistributionChart"></canvas>
+</div>
+
+<script src="/js/teacherDashboard.js"></script>
+
+<%- include('../../partials/footer') %>

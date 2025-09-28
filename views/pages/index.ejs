@@ -1,0 +1,27 @@
+<%- include('../partials/header', { title: 'Welcome' }) %>
+
+<div class="text-center">
+    <h1 class="text-4xl font-bold mb-4">Welcome to the Future of Coaching</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">Your one-stop platform for managing classes, attendance, payments, and more.</p>
+    <div class="space-x-4">
+        <a href="/login" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Teacher Login</a>
+        <a href="/login" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">Student Login</a>
+    </div>
+</div>
+
+<div class="mt-16 grid md:grid-cols-3 gap-8 text-left">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-2">For Teachers</h2>
+        <p class="text-gray-600 dark:text-gray-400">Manage batches, mark attendance, track payments, and communicate with students effortlessly.</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-2">For Students</h2>
+        <p class="text-gray-600 dark:text-gray-400">Track your attendance, pay fees online, download receipts, and stay updated with announcements.</p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-2">Secure Payments</h2>
+        <p class="text-gray-600 dark:text-gray-400">Powered by Razorpay for secure and seamless online fee payments. Manual payment tracking included.</p>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

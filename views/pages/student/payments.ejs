@@ -1,0 +1,57 @@
+<%- include('../../partials/header', { title: 'My Payments' }) %>
+
+<h1 class="text-3xl font-bold mb-6">My Payments & Invoices</h1>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <% if (typeof invoices !== 'undefined' && invoices.length > 0) { %>
+                    <% invoices.forEach(invoice => { %>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">INV-<%= invoice.id %></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><%= invoice.batch_name %></td>
+                            <td class="px-6 py-4 whitespace-nowrap">₹<%= (invoice.amount_cents / 100).toFixed(2) %></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><%= new Date(invoice.due_on).toLocaleDateString() %></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (invoice.status === 'PAID') { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Paid</span>
+                                <% } else if (invoice.status === 'PENDING') { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                <% } else { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"><%= invoice.status %></span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (invoice.status === 'PENDING') { %>
+                                    <button class="pay-now-btn bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" data-invoice-id="<%= invoice.id %>">Pay Now</button>
+                                <% } else if (invoice.status === 'PAID' && invoice.payment_id) { %>
+                                    <a href="/student/receipts/<%= invoice.payment_id %>" class="text-blue-500 hover:underline">View Receipt</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-gray-500">You have no invoices.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js/payments.js"></script>
+
+<%- include('../../partials/footer') %>

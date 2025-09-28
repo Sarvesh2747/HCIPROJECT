@@ -1,0 +1,43 @@
+<%- include('../../partials/header', { title: 'Batch Schedule' }) %>
+
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold"><%= batch.name %> - Schedule</h1>
+    <div>
+        <a href="/teacher/batches/<%= batch.id %>/announcements" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">View Announcements</a>
+        <a href="/teacher/batches/<%= batch.id %>/announcements/new" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">New Announcement</a>
+        <a href="/teacher/batches/<%= batch.id %>/payments" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">View Payments</a>
+        <a href="/teacher/batches/<%= batch.id %>/attendance/view" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">View Attendance</a>
+        <a href="/teacher/batches/<%= batch.id %>/attendance" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">Mark Attendance</a>
+        <a href="/teacher/batches/<%= batch.id %>/students" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 mr-2">View Students</a>
+        <a href="/teacher/batches/<%= batch.id %>/students/new" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Add Student</a>
+    </div>
+</div>
+
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Date</th>
+                <th class="py-2">Time</th>
+                <th class="py-2">Topic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof schedule !== 'undefined' && schedule.length > 0) { %>
+                <% schedule.forEach(item => { %>
+                    <tr>
+                        <td class="py-2"><%= new Date(item.date).toLocaleDateString() %></td>
+                        <td class="py-2"><%= item.time %></td>
+                        <td class="py-2"><%= item.topic %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="3" class="py-2 text-gray-500">No schedule found for this batch.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../../partials/footer') %>

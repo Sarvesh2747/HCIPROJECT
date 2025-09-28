@@ -1,0 +1,43 @@
+<%- include('../../partials/header', { title: 'Mark Attendance' }) %>
+
+<h1 class="text-3xl font-bold mb-6">Mark Attendance for <%= batch.name %></h1>
+
+<form action="/teacher/batches/<%= batch.id %>/attendance" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="mb-4">
+        <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date</label>
+        <input type="date" id="date" name="date" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600" required>
+    </div>
+    <table class="w-full text-left">
+        <thead>
+            <tr>
+                <th class="py-2">Student</th>
+                <th class="py-2">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof students !== 'undefined' && students.length > 0) { %>
+                <% students.forEach(student => { %>
+                    <tr>
+                        <td class="py-2"><%= student.name %></td>
+                        <td class="py-2">
+                            <input type="hidden" name="students[<%= student.id %>][student_id]" value="<%= student.id %>">
+                            <select name="students[<%= student.id %>][status]" class="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Late">Late</option>
+                            </select>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="2" class="py-2 text-gray-500">No students found in this batch.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <button type="submit" class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Mark Attendance</button>
+</form>
+
+<%- include('../../partials/footer') %>
